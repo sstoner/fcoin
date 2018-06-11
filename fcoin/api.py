@@ -22,7 +22,21 @@ class Api():
   @property
   def orders(self):
     return Orders(self.session)
+  @property
+  def market(self):
+    return Market(self.session)
 
+  #public api
+  def currencies(self):
+    self.api_url = "https://api.fcoin.com/v2/public/currencies"
+    return self.session.get(self.api_url).json()
+
+  def symbols(self):
+    self.api_url = "https://api.fcoin.com/v2/public/symbols"
+    return self.session.get(self.api_url).json()
+  def server_time(self):
+    self.api_url = "https://api.fcoin.com/v2/public/server-time"
+    return self.session.get(self.api_url).json()
 
 class Orders():
   def __init__(self,session):
@@ -69,6 +83,30 @@ class Orders():
     cancel_api_url = "https://api.fcoin.com/v2/orders/{order_id}/submit-cancel"
     return self.session.post(cancel_api_url.format(order_id=order_id)).json()
 
+
+class Market():
+  def __init__(self,session):
+    self.session = session
+    self.api_base_url = "https://api.fcoin.com/v2/market"
+    self.wss_url = "wss://api.fcoin.com/v2/ws"
+  def get_ticker(self,ticker):
+    self.api_url = self.api_base_url + "/ticker/{ticker}".format(ticker = ticker)
+    print(self.api_url)
+    return self.session.get(self.api_url).json()
+  def get_depth(self,level,symbol):
+    self.api_url = self.api_base_url + "/depth/{level}/{symbol}".format(level=level,symbol=symbol)
+    return self.session.get(self.api_url).json()
+
+  def get_lastest_trade(self,symbol):
+    self.api_url = self.api_base_url + "/trades/{symbol}".format(symbol=symbol)
+    return self.session.get(self.api_url,params = {"before": "100","limit": "20"}).json()
+
+  def get_candle_info(self,resolution,symbol):
+    self.api_url = self.api_base_url + "/candles/{resolution}/{symbol}".format(resolution=resolution,symbol=symbol)
+    return self.session.get(self.api_url,params = {"before": "100","limit": 20}).json()
+
+
+
 def order_create_param(*args):
   payload = {
       "symbol": args[0],
@@ -81,3 +119,10 @@ def order_create_param(*args):
 
 def authorize(api_key,api_secret):
   return Api().authorize(api_key,api_secret)
+
+
+def init_ws():
+  ws_url = "wss://api.fcoin.com/v2/ws"
+  from websocket import create_connection
+  ws = create_connection(ws_url)
+  return ws

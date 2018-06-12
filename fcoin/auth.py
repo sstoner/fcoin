@@ -19,6 +19,7 @@ class HMACAuth(AuthBase):
         if request.method == "POST" and request.body:
             adjusted_body = ""
             request_body = json.loads(request.body.decode())
+            request_body = collections.OrderedDict(sorted(request_body.items()))
             for item in request_body.items():
                 param = item[0] + "=" + item[1]
                 adjusted_body = adjusted_body + param + "&"

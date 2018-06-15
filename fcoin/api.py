@@ -121,8 +121,14 @@ def authorize(api_key,api_secret):
   return Api().authorize(api_key,api_secret)
 
 
+class HandleTickerWS(WebsocketClient):
+    pass
+
 def init_ws():
-  ws_url = "wss://api.fcoin.com/v2/ws"
-  from websocket import create_connection
-  ws = create_connection(ws_url)
+  from WebsocketClient import WebsocketClient
+  ws = HandleTickerWS()
   return ws
+
+
+
+

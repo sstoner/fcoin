@@ -2,6 +2,7 @@ import requests
 from .auth import HMACAuth
 import collections
 import json
+from .WebsocketClient import WebsocketClient
 class Api():
   def __init__(self):
     self.session = requests.session()
@@ -125,7 +126,6 @@ class HandleTickerWS(WebsocketClient):
     pass
 
 def init_ws():
-  from WebsocketClient import WebsocketClient
   ws = HandleTickerWS()
   return ws
 

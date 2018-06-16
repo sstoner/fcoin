@@ -122,7 +122,7 @@ def authorize(api_key,api_secret):
   return Api().authorize(api_key,api_secret)
 
 
-class HandleTickerWS(WebsocketClient):
+class HandleWS(WebsocketClient):
     pass
 
 def init_ws():
